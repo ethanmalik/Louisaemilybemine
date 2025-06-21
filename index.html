@@ -67,6 +67,54 @@
       }
     }
     
+    /* Floating Hearts */
+    .floating-heart {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background-color: #ff6b8b;
+      transform: rotate(45deg);
+      animation: float 15s infinite linear;
+      opacity: 0.6;
+    }
+    
+    .floating-heart:before,
+    .floating-heart:after {
+      content: '';
+      width: 20px;
+      height: 20px;
+      background-color: #ff6b8b;
+      border-radius: 50%;
+      position: absolute;
+    }
+    
+    .floating-heart:before {
+      top: -10px;
+      left: 0;
+    }
+    
+    .floating-heart:after {
+      top: 0;
+      left: -10px;
+    }
+    
+    @keyframes float {
+      0% {
+        transform: rotate(45deg) translateY(0) translateX(0);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.6;
+      }
+      90% {
+        opacity: 0.6;
+      }
+      100% {
+        transform: rotate(45deg) translateY(-100vh) translateX(50px);
+        opacity: 0;
+      }
+    }
+    
     /* Book Container */
     .book-container {
       width: 90%;
@@ -75,6 +123,20 @@
       position: relative;
       perspective: 2000px;
       margin: 50px 0;
+      transform-style: preserve-3d;
+    }
+    
+    /* Book Spine Effect */
+    .book-spine {
+      position: absolute;
+      left: -20px;
+      top: 0;
+      height: 100%;
+      width: 40px;
+      background: linear-gradient(to right, #b3577a, #d67093);
+      transform: rotateY(90deg) translateZ(-20px);
+      border-radius: 5px 0 0 5px;
+      box-shadow: -5px 0 15px rgba(0,0,0,0.2);
     }
     
     /* Individual Pages */
@@ -94,6 +156,7 @@
       background-position: center;
       overflow-y: auto;
       transform-origin: left center;
+      backface-visibility: hidden;
     }
     
     .page.active {
@@ -119,6 +182,9 @@
     .page-content {
       background-color: transparent;
       backdrop-filter: blur(5px);
+      height: 100%;
+      display: flex;
+      flex-direction: column;
     }
     
     /* Page Decorations */
@@ -126,6 +192,7 @@
       position: absolute;
       opacity: 0.15;
       z-index: 1;
+      pointer-events: none;
     }
     
     .page-decoration.heart {
@@ -247,6 +314,20 @@
       transform: scale(1.1);
     }
     
+    /* Polaroid Effect for Photos */
+    .polaroid {
+      background: white;
+      padding: 15px 15px 40px 15px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+      transform: rotate(2deg);
+      transition: all 0.3s;
+    }
+    
+    .polaroid:hover {
+      transform: rotate(0deg) scale(1.05);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+    
     /* Zoomed Photo Modal */
     .photo-modal {
       position: fixed;
@@ -260,6 +341,13 @@
       align-items: center;
       z-index: 1000;
       display: none;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    
+    .photo-modal.active {
+      display: flex;
+      opacity: 1;
     }
     
     .zoomed-photo {
@@ -267,6 +355,12 @@
       max-height: 90%;
       border-radius: 10px;
       box-shadow: 0 0 30px rgba(214, 112, 147, 0.5);
+      transform: scale(0.9);
+      transition: transform 0.3s;
+    }
+    
+    .photo-modal.active .zoomed-photo {
+      transform: scale(1);
     }
     
     .close-modal {
@@ -276,6 +370,12 @@
       color: white;
       font-size: 2rem;
       cursor: pointer;
+      transition: transform 0.3s;
+    }
+    
+    .close-modal:hover {
+      transform: scale(1.2);
+      color: #d67093;
     }
     
     /* Detail Pages */
@@ -292,6 +392,7 @@
       max-width: 80%;
       position: relative;
       border: 1px solid #e8c3ca;
+      transform-style: preserve-3d;
     }
     
     .detail-content:before {
@@ -315,6 +416,24 @@
       margin-top: 20px;
       transition: all 0.3s;
       border: none;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .back-btn:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      transition: 0.5s;
+    }
+    
+    .back-btn:hover:before {
+      left: 100%;
     }
     
     .back-btn:hover {
@@ -326,6 +445,10 @@
     /* Final Page */
     .proposal-page {
       text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      height: 100%;
     }
     
     .proposal-page h2 {
@@ -361,12 +484,32 @@
       transition: all 0.3s;
       margin-top: 20px;
       border: none;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+    
+    .accept-btn:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg, #d67093, #b3577a);
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    
+    .accept-btn:hover:before {
+      opacity: 1;
     }
     
     .accept-btn:hover {
       transform: translateY(-5px);
       box-shadow: 0 10px 30px rgba(179, 87, 122, 0.6);
-      background: linear-gradient(45deg, #d67093, #b3577a);
     }
     
     /* Navigation Controls */
@@ -394,14 +537,33 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .page-btn:after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #d67093;
+      border-radius: 50%;
+      transform: scale(0);
+      transition: transform 0.3s;
+      z-index: -1;
     }
     
     .page-btn:hover {
       transform: translateY(-5px);
       box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-      background: #d67093;
       color: white;
       border-color: #b3577a;
+    }
+    
+    .page-btn:hover:after {
+      transform: scale(1);
     }
     
     .page-btn:disabled {
@@ -411,6 +573,10 @@
       background: white;
       color: #ccc;
       border-color: #ccc;
+    }
+    
+    .page-btn:disabled:after {
+      display: none;
     }
     
     /* Music Player */
@@ -427,6 +593,12 @@
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
       z-index: 100;
       border: 1px solid #e8c3ca;
+      transition: all 0.3s;
+    }
+    
+    .music-control:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
     }
     
     .music-btn {
@@ -440,6 +612,30 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      transition: all 0.3s;
+    }
+    
+    .music-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 15px rgba(179, 87, 122, 0.6);
+    }
+    
+    /* Progress Bar */
+    .progress-container {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: rgba(214, 112, 147, 0.2);
+      z-index: 100;
+    }
+    
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(to right, #b3577a, #d67093);
+      width: 0%;
+      transition: width 0.3s;
     }
     
     /* Confetti Effect */
@@ -465,6 +661,32 @@
       }
     }
     
+    /* Sparkle Effect */
+    .sparkle {
+      position: absolute;
+      width: 5px;
+      height: 5px;
+      background-color: white;
+      border-radius: 50%;
+      pointer-events: none;
+      animation: sparkle 1s ease-out;
+      opacity: 0;
+    }
+    
+    @keyframes sparkle {
+      0% {
+        transform: scale(0);
+        opacity: 0;
+      }
+      50% {
+        opacity: 1;
+      }
+      100% {
+        transform: scale(1.5);
+        opacity: 0;
+      }
+    }
+    
     /* Page Transitions */
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(20px); }
@@ -481,10 +703,17 @@
       100% { transform: rotateY(0deg); }
     }
     
+    /* Book Opening Animation */
+    @keyframes bookOpen {
+      0% { transform: scale(0.8) rotateX(10deg); opacity: 0; }
+      100% { transform: scale(1) rotateX(0); opacity: 1; }
+    }
+    
     /* Responsive Design */
     @media (max-width: 768px) {
       .book-container {
         height: 500px;
+        animation: none;
       }
       
       .page {
@@ -517,6 +746,38 @@
         height: 50px;
         font-size: 1.2rem;
       }
+      
+      .proposal-page h2 {
+        font-size: 2.5rem;
+      }
+      
+      .proposal-text {
+        font-size: 1.1rem;
+      }
+      
+      .accept-btn {
+        padding: 12px 30px;
+        font-size: 1.1rem;
+      }
+    }
+    
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: rgba(214, 112, 147, 0.1);
+      border-radius: 10px;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(#b3577a, #d67093);
+      border-radius: 10px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(#d67093, #b3577a);
     }
   </style>
 </head>
@@ -524,12 +785,23 @@
   <!-- Falling Love Background -->
   <div class="love-background" id="loveBackground"></div>
   
+  <!-- Floating Hearts Background -->
+  <div id="floatingHearts"></div>
+  
   <!-- Music Control -->
   <div class="music-control">
     <span>Romantic Music</span>
     <button class="music-btn" id="musicToggle">
       <i class="fas fa-music"></i>
     </button>
+    <button class="music-btn" id="nextTrack">
+      <i class="fas fa-forward"></i>
+    </button>
+  </div>
+  
+  <!-- Progress Bar -->
+  <div class="progress-container">
+    <div class="progress-bar" id="progressBar"></div>
   </div>
   
   <!-- Photo Modal -->
@@ -539,7 +811,9 @@
   </div>
   
   <!-- Book Container -->
-  <div class="book-container">
+  <div class="book-container" id="bookContainer">
+    <div class="book-spine"></div>
+    
     <!-- Page 1 - Cover -->
     <div class="page active" id="page1">
       <div class="page-decoration heart" style="top: 20%; left: 10%;">❤️</div>
@@ -561,8 +835,8 @@
     <div class="page" id="page2">
       <div class="page-decoration heart" style="top: 30%; right: 5%; transform: rotate(30deg);">❤️</div>
       <div class="page-content">
-        <h2>Things You Love From What I remeber</h2>
-        <p style="text-align: center; margin-bottom: 20px;">Click them to see talking bout each of it</p>
+        <h2>Things You Love From What I remember</h2>
+        <p style="text-align: center; margin-bottom: 20px;">Click them to see talking about each of it</p>
         <ul class="love-list">
           <li onclick="showDetailPage('love1')">Your mom</li>
           <li onclick="showDetailPage('love2')">Ethan Malik</li>
@@ -582,7 +856,7 @@
     <div class="page" id="page3">
       <div class="page-decoration heart" style="bottom: 20%; left: 8%; transform: rotate(-15deg);">❤️</div>
       <div class="page-content">
-        <h2>Things You Dislike,  From What I observe</h2>
+        <h2>Things You Dislike, From What I observe</h2>
         <p style="text-align: center; margin-bottom: 20px;">Click them to see me yapping hahaha</p>
         <ul class="love-list">
           <li onclick="showDetailPage('hate1')">Being left by mom</li>
@@ -600,7 +874,7 @@
       <div class="page-decoration heart" style="top: 15%; right: 10%;">❤️</div>
       <div class="page-decoration heart" style="bottom: 25%; left: 10%; transform: rotate(20deg);">❤️</div>
       <div class="page-content">
-        <h2>Things that make me fall for </h2>
+        <h2>Things that make me fall for you</h2>
         <p style="text-align: center; margin-bottom: 20px;">Click to read more about each reason</p>
         <ul class="love-list">
           <li onclick="showDetailPage('reason1')">You are you</li>
@@ -624,16 +898,24 @@
         <h2>Our Beautiful Memories</h2>
         <div class="memory-gallery">
           <div class="memory-item" onclick="zoomPhoto('https://s14.gifyu.com/images/bHTVg.jpg')">
-            <img src="https://s14.gifyu.com/images/bHTVg.jpg" alt="Our Memory 1">
+            <div class="polaroid">
+              <img src="https://s14.gifyu.com/images/bHTVg.jpg" alt="Our Memory 1">
+            </div>
           </div>
           <div class="memory-item" onclick="zoomPhoto('https://s14.gifyu.com/images/bHTZs.jpg')">
-            <img src="https://s14.gifyu.com/images/bHTZs.jpg" alt="Our Memory 2">
+            <div class="polaroid">
+              <img src="https://s14.gifyu.com/images/bHTZs.jpg" alt="Our Memory 2">
+            </div>
           </div>
           <div class="memory-item" onclick="zoomPhoto('https://s14.gifyu.com/images/bHTZN.jpg')">
-            <img src="https://s14.gifyu.com/images/bHTZN.jpg" alt="Our Memory 3">
+            <div class="polaroid">
+              <img src="https://s14.gifyu.com/images/bHTZN.jpg" alt="Our Memory 3">
+            </div>
           </div>
           <div class="memory-item" onclick="zoomPhoto('https://s14.gifyu.com/images/bHTZT.jpg')">
-            <img src="https://s14.gifyu.com/images/bHTZT.jpg" alt="Our Memory 4">
+            <div class="polaroid">
+              <img src="https://s14.gifyu.com/images/bHTZT.jpg" alt="Our Memory 4">
+            </div>
           </div>
         </div>
         <p style="text-align: center; margin-top: 15px; font-style: italic;">
@@ -652,15 +934,15 @@
           <p>My Dearest Louisa,</p>
           <p>
             From the moment we met, I remember that I ask for help, to check my website that I made for Shabelle.
-            You offer some helps, patiently helping me back then, and I'm so gratefull for that. Your reaction was so cute hahaha
+            You offer some helps, patiently helping me back then, and I'm so grateful for that. Your reaction was so cute hahaha
           </p>
           <p>
            The very first time you ask me on my anonbot, I can kinda guess that is you, for real haha, it's just that I have this feelings that you'll be the one.
-           And after that, our story begin. I'm really gratefull for your action back then, if you didnt do that we might still need a long time to know each other. 
+           And after that, our story begin. I'm really grateful for your action back then, if you didn't do that we might still need a long time to know each other. 
           </p>
           <p>
-            We've come this far now, and having you always by my side feels like the greatest gift I've ever received. Every moment with you, even the quiet ones, always make me so gratefull that having you as mine.
-            You never asked me to change, and yet, being with you makes me want to be the best version of myself. Because you deserve someone who gives you the kind of love that makes you fell loved, adored, give you the best you deserve. And I want to be that someone,every day, in every small way I can.
+            We've come this far now, and having you always by my side feels like the greatest gift I've ever received. Every moment with you, even the quiet ones, always make me so grateful that having you as mine.
+            You never asked me to change, and yet, being with you makes me want to be the best version of myself. Because you deserve someone who gives you the kind of love that makes you feel loved, adored, give you the best you deserve. And I want to be that someone, every day, in every small way I can.
           </p>
           <p style="text-align: center; font-weight: bold; font-size: 1.4rem; margin: 30px 0;">
             Will you continue being mine, Louisa Emily?
@@ -684,9 +966,9 @@
           your adorable grumpiness about age mentions, and that beautiful mind of yours.<br>
           Will you continue this beautiful journey with me?
         </p>
-        <a href="https://t.me/enforczer" class="accept-btn" id="acceptProposal">
+        <button class="accept-btn" id="acceptProposal">
           <i class="fas fa-heart"></i> Yes, I Accept! <i class="fas fa-heart"></i>
-        </a>
+        </button>
         <div style="margin-top: 40px;">
           <i class="fas fa-heart" style="color: #b3577a; font-size: 3rem; animation: pulse 1.5s infinite;"></i>
         </div>
@@ -738,8 +1020,9 @@
     let previousPage = 1;
     let isFlipping = false;
     let navigationHistory = [];
+    let isMusicPlaying = false;
 
-      // Music playlist
+    // Music playlist
     const musicPlaylist = [
       'https://audio.jukehost.co.uk/Pdf1wNt4Wt4cRSbqtCYO4IDrBkUpGpRh',
       'https://audio.jukehost.co.uk/aDZ3XR1KA0o0Z6MJh0KjbelWkH8nbmZS',
@@ -824,19 +1107,19 @@
       },
       'reason2': {
         title: 'Attention & Understanding',
-        content: 'You have this incredible ability to make people feel truly seen and understood, sayang. When I\'m with you, I feel like I\'m the only person in the world that matters. That makes me fall  for you again and again.'
+        content: 'You have this incredible ability to make people feel truly seen and understood, sayang. When I\'m with you, I feel like I\'m the only person in the world that matters. That makes me fall for you again and again.'
       },
       'reason3': {
         title: 'Comfort You Provide',
-        content: 'With you, I can completely be myself. You create this safe space that feels like home, loulou. Your presence alone makes me calm and peacful, cuz I can talk to you, sharing my thoughts with you, venting on yu, or just asking for kisses and hugs whwenever I\'m tired and overwhelming.'
+        content: 'With you, I can completely be myself. You create this safe space that feels like home, loulou. Your presence alone makes me calm and peaceful, cuz I can talk to you, sharing my thoughts with you, venting on yu, or just asking for kisses and hugs whenever I\'m tired and overwhelming.'
       },
       'reason4': {
         title: 'Sweetest Person',
-        content: 'Your kindness radiates from you. Whether it\'s how you treat others or remember small details about people, you have this natural sweetness that makes everone love you, sayang. I trully admire you for this.'
+        content: 'Your kindness radiates from you. Whether it\'s how you treat others or remember small details about people, you have this natural sweetness that makes everyone love you, sayang. I truly admire you for this.'
       },
       'reason5': {
         title: 'Non-judgmental Listening',
-        content: 'You have this gift of listening with your whole heart. When I talk to you, I know I\'m being heard without preconceptions. And how your responds always validating my feelings first, it always makes me gratefull to meet you sayang.'
+        content: 'You have this gift of listening with your whole heart. When I talk to you, I know I\'m being heard without preconceptions. And how your responds always validating my feelings first, it always makes me grateful to meet you sayang.'
       },
       'reason6': {
         title: 'Care for Surroundings',
@@ -848,7 +1131,7 @@
       },
       'reason8': {
         title: 'Make Me Blush',
-        content: 'The fact that you can still make me blush after all this time speaks volumes. You awaken this boyish giddiness in me that I didn\'t know I still had. Maybe I rarely said that Im blushing but I often got blushing in our convorsation. I just didnt tell you cuz no way.'
+        content: 'The fact that you can still make me blush after all this time speaks volumes. You awaken this boyish giddiness in me that I didn\'t know I still had. Maybe I rarely said that Im blushing but I often got blushing in our conversation. I just didnt tell you cuz no way.'
       },
       'reason9': {
         title: 'Dedicated Person',
@@ -871,6 +1154,43 @@
         love.style.fontSize = (Math.random() * 20 + 20) + 'px';
         bg.appendChild(love);
       }
+    }
+    
+    // Create floating hearts
+    function createFloatingHearts() {
+      const container = document.getElementById('floatingHearts');
+      const colors = ['#ff6b8b', '#ff8e9e', '#ffb3b3', '#ffd1dc', '#ff9eb5'];
+      
+      for (let i = 0; i < 10; i++) {
+        const heart = document.createElement('div');
+        heart.className = 'floating-heart';
+        heart.style.left = Math.random() * 100 + 'vw';
+        heart.style.top = Math.random() * 100 + 'vh';
+        heart.style.animationDuration = (Math.random() * 10 + 10) + 's';
+        heart.style.animationDelay = Math.random() * 5 + 's';
+        heart.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        
+        const before = heart.querySelector(':before');
+        const after = heart.querySelector(':after');
+        if (before) before.style.backgroundColor = heart.style.backgroundColor;
+        if (after) after.style.backgroundColor = heart.style.backgroundColor;
+        
+        container.appendChild(heart);
+      }
+    }
+    
+    // Create sparkle effect
+    function createSparkle(x, y) {
+      const sparkle = document.createElement('div');
+      sparkle.className = 'sparkle';
+      sparkle.style.left = x + 'px';
+      sparkle.style.top = y + 'px';
+      sparkle.style.animationDelay = Math.random() * 0.5 + 's';
+      document.body.appendChild(sparkle);
+      
+      setTimeout(() => {
+        sparkle.remove();
+      }, 1000);
     }
     
     // Change page function with flip animation
@@ -913,6 +1233,9 @@
         // Update navigation buttons
         document.getElementById('prevBtn').disabled = currentPage === 1;
         document.getElementById('nextBtn').disabled = currentPage === totalPages;
+        
+        // Update progress bar
+        updateProgressBar();
       }, 1000);
     }
     
@@ -947,7 +1270,16 @@
         // Update navigation buttons
         document.getElementById('prevBtn').disabled = currentPage === 1;
         document.getElementById('nextBtn').disabled = currentPage === totalPages;
+        
+        // Update progress bar
+        updateProgressBar();
       }, 1000);
+    }
+    
+    // Update progress bar
+    function updateProgressBar() {
+      const progress = (currentPage - 1) / (totalPages - 1) * 100;
+      document.getElementById('progressBar').style.width = progress + '%';
     }
     
     // Show detail page
@@ -969,6 +1301,16 @@
         // Disable navigation buttons
         document.getElementById('prevBtn').disabled = true;
         document.getElementById('nextBtn').disabled = true;
+        
+        // Create sparkles on detail page
+        for (let i = 0; i < 10; i++) {
+          setTimeout(() => {
+            createSparkle(
+              Math.random() * window.innerWidth,
+              Math.random() * window.innerHeight
+            );
+          }, i * 200);
+        }
       }
     }
     
@@ -993,12 +1335,24 @@
     // Zoom photo function
     function zoomPhoto(photoUrl) {
       document.getElementById('zoomedPhoto').src = photoUrl;
-      document.getElementById('photoModal').style.display = 'flex';
+      document.getElementById('photoModal').classList.add('active');
+      
+      // Prevent scrolling when modal is open
+      document.body.style.overflow = 'hidden';
     }
     
     // Close photo modal
     document.getElementById('closeModal').addEventListener('click', function() {
-      document.getElementById('photoModal').style.display = 'none';
+      document.getElementById('photoModal').classList.remove('active');
+      document.body.style.overflow = 'auto';
+    });
+    
+    // Close modal when clicking outside
+    document.getElementById('photoModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        document.getElementById('photoModal').classList.remove('active');
+        document.body.style.overflow = 'auto';
+      }
     });
     
     // Navigation controls
@@ -1020,6 +1374,11 @@
         goBackToPreviousPage();
       } else if (e.key === 'ArrowRight' && currentPage < totalPages) {
         goToPage(currentPage + 1);
+      } else if (e.key === 'Escape') {
+        if (document.getElementById('photoModal').classList.contains('active')) {
+          document.getElementById('photoModal').classList.remove('active');
+          document.body.style.overflow = 'auto';
+        }
       }
     });
     
@@ -1029,17 +1388,24 @@
       const playPromise = bgMusic.play();
       
       if (playPromise !== undefined) {
-        playPromise.catch(error => {
+        playPromise.then(() => {
+          isMusicPlaying = true;
+          document.getElementById('musicToggle').innerHTML = '<i class="fas fa-music"></i>';
+        }).catch(error => {
           // If autoplay fails, set up interaction-based play
           document.addEventListener('click', () => {
             bgMusic.play()
               .then(() => {
+                isMusicPlaying = true;
                 document.getElementById('musicToggle').innerHTML = '<i class="fas fa-music"></i>';
               })
               .catch(e => console.log("Still blocked"));
           }, { once: true });
         });
       }
+      
+      // Initialize book animation
+      document.getElementById('bookContainer').style.animation = 'bookOpen 1s ease-out forwards';
     });
     
     // Music toggle button
@@ -1047,11 +1413,26 @@
       if (bgMusic.paused) {
         bgMusic.play()
           .then(() => {
+            isMusicPlaying = true;
             document.getElementById('musicToggle').innerHTML = '<i class="fas fa-music"></i>';
           });
       } else {
         bgMusic.pause();
+        isMusicPlaying = false;
         document.getElementById('musicToggle').innerHTML = '<i class="fas fa-volume-mute"></i>';
+      }
+    });
+    
+    // Next track button
+    document.getElementById('nextTrack').addEventListener('click', () => {
+      currentTrackIndex = (currentTrackIndex + 1) % musicPlaylist.length;
+      bgMusic.src = musicPlaylist[currentTrackIndex];
+      
+      if (isMusicPlaying) {
+        bgMusic.play()
+          .then(() => {
+            document.getElementById('musicToggle').innerHTML = '<i class="fas fa-music"></i>';
+          });
       }
     });
     
@@ -1060,7 +1441,7 @@
       e.preventDefault();
       createConfetti();
       setTimeout(() => {
-        window.location.href = e.target.href;
+        window.location.href = 'https://t.me/enforczer';
       }, 2000);
     });
     
@@ -1084,18 +1465,30 @@
       }
     }
     
+    // Sparkle effect on click
+    document.addEventListener('click', (e) => {
+      createSparkle(e.clientX, e.clientY);
+    });
+    
     // Initialize on load
     window.addEventListener('load', () => {
       createFallingLove();
+      createFloatingHearts();
       
       // Try to autoplay music again in case DOMContentLoaded was too early
       const playPromise = bgMusic.play();
       
       if (playPromise !== undefined) {
-        playPromise.catch(error => {
+        playPromise.then(() => {
+          isMusicPlaying = true;
+          document.getElementById('musicToggle').innerHTML = '<i class="fas fa-music"></i>';
+        }).catch(error => {
           document.getElementById('musicToggle').innerHTML = '<i class="fas fa-volume-mute"></i>';
         });
       }
+      
+      // Initialize progress bar
+      updateProgressBar();
     });
   </script>
 </body>
